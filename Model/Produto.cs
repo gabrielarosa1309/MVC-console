@@ -1,0 +1,74 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace mvc_console.Model
+{
+    public class Produto
+    {
+        //propriedades
+        public int Codigo { get; set; }
+        public string? Nome { get; set; }
+        public float Preco { get; set; }
+
+        //caminho da pasta e do arquivo definido
+        private const string PATH = "Database/Produto.csv";
+
+        //construtor
+        public Produto()
+        {
+            //obter o caminho da pasta
+            string pasta = PATH.Split("/")[0]; //"Database"
+
+            //se não existir uma pasta "Database", então cria-se uma
+            if (!Directory.Exists(pasta))
+            {
+                Directory.CreateDirectory(pasta);
+            }
+
+            //se não existir um arquivo csv no caminho, então cria-se um
+            if (!File.Exists(PATH))
+            {
+                File.Create(PATH);
+            }
+        }
+
+        public List<Produto> Ler()
+        {
+            //instanciar uma lista de produto
+            List<Produto> produtos = new List<Produto>();
+
+            //array de string que recebe cada linha do csv
+            string[] linhas = File.ReadAllLines(PATH);
+
+            foreach (string item in linhas)
+            {
+                //antes do split
+                //001;Coca;6,50
+
+                //array que recebe os itens da linha separado por ";"
+                string[] atributos = item.Split(";");
+
+                //após o split
+                //atributos[0] = 001
+                //atributos[1] = "Coca"
+                //atributos[2] = 6,50f
+
+                //instancia de objeto produto
+                Produto p = new Produto();
+
+                //atribuir os dados dentro de um objeto
+                p.Codigo = int.Parse(atributos[0]); //001
+                p.Nome = atributos[1]; //"Coca"
+                p.Preco = float.Parse(atributos[2]); //6,50f
+
+                //adiciona os objetos dentro da lista
+                produtos.Add(p);
+            }
+
+            //retorna a lista de produtos
+            return produtos;
+        }
+    }
+}
